@@ -19,10 +19,6 @@ byte mac[] = { 0xDE, 0x59, 0x53, 0x54, 0x56, 0x00 };
 EthernetServer server(80);  // create a server at port 80
 ATEMbase AtemSwitcher;
 
-bool dhcp = true;
-IPAddress ip;
-IPAddress atemip;
-
 void setup() {
 	Serial.begin(9600);
 	
@@ -30,13 +26,13 @@ void setup() {
 		pinMode(dio[i], OUTPUT);
 	}
 	
+	IPAddress ip;
 	ip[0] = EEPROM.read(0);
 	ip[1] = EEPROM.read(1);
 	ip[2] = EEPROM.read(2);
 	ip[3] = EEPROM.read(3);
 	
-	dhcp = EEPROM.read(4) != 0;
-	
+	IPAddress atemip;
 	atemip[0] = EEPROM.read(5+0);
 	atemip[1] = EEPROM.read(5+1);
 	atemip[2] = EEPROM.read(5+2);
@@ -46,10 +42,9 @@ void setup() {
 		mapping[i] = EEPROM.read(9+i);
 	}
 	
-	Serial.println("Initializing network");
-	if (dhcp) {
+	if (EEPROM.read(4) != 0) {
 		if (Ethernet.begin(mac) == 0) {
-			Serial.println("ERROR - DHCP failed!");
+			Serial.println("E1");
 			return;
 		}
 		ip = Ethernet.localIP();
@@ -59,21 +54,17 @@ void setup() {
 	server.begin();
 	
 	AtemSwitcher.begin(atemip, 56417);
-	AtemSwitcher.serialOutput(0x80);
 	AtemSwitcher.connect();
 	
-	Serial.println("Initializing SD card...");
 	if (!SD.begin(4)) {
-		Serial.println("ERROR - SD card initialization failed!");
+		Serial.println("E2");
 		return;
 	}
-	Serial.println("SUCCESS - SD card initialized.");
 	
 	if (!SD.exists("index.htm")) {
-		Serial.println("ERROR - Can't find index.htm file!");
+		Serial.println("E3");
 		return;
 	}
-	Serial.println("SUCCESS - Found index.htm file.");
 }
 
 void loop() {
@@ -93,7 +84,10 @@ bool getProgramTally(int source) {
 void updateXBEE() {
 	int addr = (state % 64);
 	state++;
-	updateTally(addr, getProgramTally(mapping[addr]));
+	int mapp = mapping[addr];
+	if (mapp > 0) {
+		updateTally(addr, getProgramTally(mapp));
+	}
 
 	for (int i = 0; i < 8; i++) {
 		if (getProgramTally(i + 1) != tState[i]) {
@@ -113,9 +107,9 @@ void updateTally(int addr, int state) {
 	for (int i = 0; i < 6; i++) {
 		digitalWrite(dio[i + 1], addr & (00000001 << i));
 	}
-	delay(30);
+	delay(20);
 	digitalWrite(dio[7], LOW);
-	delay(30);
+	delay(20);
 }
 
 void reset() {
@@ -152,16 +146,17 @@ IPAddress stringToIp(String ip) {
 void setValue(String var, String val) {
 	if (var == "dhcp") {
 		EEPROM.write(4, val.toInt());
-		dhcp = val.toInt() != 0;
+		qReset = true;
 	} else if (var == "ip") {
-		ip = stringToIp(val);
+		IPAddress ip = stringToIp(val);
 		
 		EEPROM.write(0, ip[0]);
 		EEPROM.write(1, ip[1]);
 		EEPROM.write(2, ip[2]);
 		EEPROM.write(3, ip[3]);
+		qReset = true;
 	} else if (var == "atemip") {
-		atemip = stringToIp(val);
+		IPAddress atemip = stringToIp(val);
 		
 		EEPROM.write(5+0, atemip[0]);
 		EEPROM.write(5+1, atemip[1]);
@@ -200,7 +195,7 @@ void doTemplate(char line[], EthernetClient client) {
 			result = String(mapping[args.toInt()]);
 		} else if (temp == "ip") {
 			String dot = ".";
-			result = ip[0] + dot + ip[1] + dot + ip[2] + dot + ip[3];
+			result = EEPROM.read(0) + dot + EEPROM.read(1) + dot + EEPROM.read(2) + dot + EEPROM.read(3);
 		} else if (temp == "file") {
 			char args_[BUFSIZ];
 			args.toCharArray(args_, BUFSIZ);
@@ -209,9 +204,9 @@ void doTemplate(char line[], EthernetClient client) {
 			result = "DE:59:53:54:56:00";
 		} else if (temp == "atemip") {
 			String dot = ".";
-			result = atemip[0] + dot + atemip[1] + dot + atemip[2] + dot + atemip[3];
+			result = EEPROM.read(5+0) + dot + EEPROM.read(5+1) + dot + EEPROM.read(5+2) + dot + EEPROM.read(5+3);
 		} else if (temp == "dhcp") {
-			result = (0 != args.toInt()) == dhcp ? "checked" : "";
+			result = (0 != args.toInt()) == (EEPROM.read(4) != 0) ? "checked" : "";
 		}
 		line_ = (line_.substring(0, a) + result + line_.substring(b + 2));
 		line_.toCharArray(line, BUFSIZ);
