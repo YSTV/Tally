@@ -5,10 +5,7 @@
 #include <Ethernet.h>
 #include <SD.h>
 
-#include <SkaarhojPgmspace.h>
-
 #include <ATEMbase.h>
-#include <ATEMext.h>
 
 int dio[] = {A0, A1, A2, A3, 7, A5, A4, 6};
 int tState[8];
@@ -20,7 +17,7 @@ bool qReset = false;
 // DE - YTSV - 00
 byte mac[] = { 0xDE, 0x59, 0x53, 0x54, 0x56, 0x00 };
 EthernetServer server(80);  // create a server at port 80
-ATEMext AtemSwitcher;
+ATEMbase AtemSwitcher;
 
 bool dhcp = true;
 IPAddress ip;
