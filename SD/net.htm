@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-GB">
+	<head>
+		<title>XBee Master - Network settings</title>
+		<link rel="stylesheet" href="/style.css" />
+	</head>
+	<body>
+		{{file:header.inc}}
+		<form action="/" method="POST">
+			<label>
+				<span>MAC:</span>
+				{{mac}}
+			</label>
+			<label>
+				<span>DHCP:</span>
+				
+				<input type="radio" name="dhcp" id="dhcp1" value="1" {{dhcp:1}}/>
+				<label for="dhcp1">ON</label>
+				
+				<input type="radio" name="dhcp" id="dhcp0" value="0" {{dhcp:0}}/>
+				<label for="dhcp0">OFF</label>
+			</label>
+			<label for="ip">
+				<span>IP:</span>
+				<input type="text" name="ip" id="ip" value="{{ip}}" />
+			</label>
+			<label for="atemip">
+				<span>ATEM IP:</span>
+				<input type="text" name="atemip" id="atemip" value="{{atemip}}" />
+			</label>
+			<label><input type="submit" value="Save" /></label>
+		</form>
+	</body>
+</html>
