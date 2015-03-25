@@ -1,5 +1,6 @@
 #define BUFSIZ 255
 
+#include <XBee.h>
 #include <EEPROM.h>
 #include <SPI.h>
 #include <Ethernet.h>
@@ -18,9 +19,12 @@ bool qReset = false;
 byte mac[] = { 0xDE, 0x59, 0x53, 0x54, 0x56, 0x00 };
 EthernetServer server(80);  // create a server at port 80
 ATEMbase AtemSwitcher;
+XBee xbee = XBee();
 
 void setup() {
 	Serial.begin(9600);
+	Serial3.begin(9600);
+	xbee.begin(Serial3);
 	
 	for (int i = 0; i < 8; i++) {
 		pinMode(dio[i], OUTPUT);
@@ -41,7 +45,7 @@ void setup() {
 	for (int i = 0; i < 64; i++) {
 		mapping[i] = EEPROM.read(9+i);
 	}
-	
+
 	if (EEPROM.read(4) != 0) {
 		if (Ethernet.begin(mac) == 0) {
 			Serial.println("E1");
@@ -102,14 +106,12 @@ void updateXBEE() {
 }
 
 void updateTally(int addr, int state) {
-	digitalWrite(dio[0], state);
-	digitalWrite(dio[7], HIGH);
-	for (int i = 0; i < 6; i++) {
-		digitalWrite(dio[i + 1], addr & (00000001 << i));
-	}
-	delay(20);
-	digitalWrite(dio[7], LOW);
-	delay(20);
+	XBeeAddress64 remoteAddress = XBeeAddress64(0x0, (addr + 1));
+	uint8_t cmd[] = {'D', '5'};
+	uint8_t val[] = { state ? 0x5 : 0x4 };
+	RemoteAtCommandRequest remoteAtRequest = RemoteAtCommandRequest(remoteAddress, cmd, val, sizeof(val));  
+
+	xbee.send(remoteAtRequest);
 }
 
 void reset() {
