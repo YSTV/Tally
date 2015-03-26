@@ -1463,13 +1463,12 @@ void XBee::send(XBeeRequest &request) {
 }
 
 void XBee::sendByte(uint8_t b, bool escape) {
-
-	if (escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
+//	if (escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
 //		std::cout << "escaping byte [" << toHexString(b) << "] " << std::endl;
-		write(ESCAPE);
-		write(b ^ 0x20);
-	} else {
+//		write(ESCAPE);
+//		write(b ^ 0x20);
+//	} else {
 		write(b);
-	}
+//	}
 }
 
