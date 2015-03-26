@@ -9,8 +9,8 @@
 #include <ATEMbase.h>
 
 int dio[] = {A0, A1, A2, A3, 7, A5, A4, 6};
-int tState[8];
-int prevState[8];
+uint8_t tState[8];
+uint8_t prevState[8];
 int mapping[64];
 int state = 0;
 
@@ -23,6 +23,8 @@ ATEMbase AtemSwitcher;
 
 XBee xbee = XBee();
 Rx16Response rx16 = Rx16Response();
+uint8_t digitalHigh = 0x5;
+uint8_t digitalLow = 0x4;
 
 void sendFile(char* file, EthernetClient client);
 void updateTally(int addr, int state);
@@ -75,7 +77,8 @@ void setup() {
 		return;
 	}
 	
-	if (!SD.exists("index.htm")) {
+	char index[] = "index.htm";
+	if (!SD.exists(index)) {
 		Serial.println("E3");
 		return;
 	}
@@ -100,9 +103,9 @@ bool getPreviewTally(int source) {
 }
 
 void updateXBEE() {
-	int addr = (state % 64);
 	state++;
-/*	int mapp = mapping[addr];
+/*	int addr = (state % 64);
+	int mapp = mapping[addr];
 	if (mapp > 0) {
 		updateTally(addr, getProgramTally(mapp));
 	}*/
@@ -121,7 +124,7 @@ void updateXBEE() {
 		}
 	}
 
-	for (int i = 0; i < 8; i++) {
+	for (uint8_t i = 0; i < 8; i++) {
 		if (getPreviewTally(i + 1) != prevState[i]) {
 			prevState[i] = getPreviewTally(i + 1);
 
@@ -148,7 +151,7 @@ void updateXBEE() {
 void updateTally(int addr, int state) {
 	XBeeAddress64 remoteAddress = XBeeAddress64(0x0, (addr + 1));
 	uint8_t cmd[] = {'D', '5'};
-	uint8_t val[] = { state ? 0x5 : 0x4 };
+	uint8_t val[] = { state ? digitalHigh : digitalLow };
 	RemoteAtCommandRequest remoteAtRequest = RemoteAtCommandRequest(remoteAddress, cmd, val, sizeof(val));  
 
 	xbee.send(remoteAtRequest);
