@@ -173,7 +173,7 @@ ARDMK_DIR = /usr/share/arduino
 # You need to specify some details of your ISP programmer and might
 # also need to specify the fuse values:
 #
-#     ISP_PROG     = stk500v2
+#     ISP_PROG	   = stk500v2
 #     ISP_PORT     = /dev/ttyACM0
 #
 # You might also need to set the fuse bits, but typically they'll be
@@ -257,7 +257,7 @@ else
 endif
 
 # include Common.mk now we know where it is
-include Common.mk
+include $(ARDMK_DIR)/Common.mk
 
 # show_config_variable macro is available now. So let's print config details for ARDMK_DIR
 ifndef ARDMK_DIR_MSG
@@ -322,7 +322,7 @@ endif
 ########################################################################
 # 1.5.x vendor - defaults to arduino
 ifndef VENDOR
-        VENDOR = arduino
+	VENDOR = arduino
     $(call show_config_variable,VENDOR,[DEFAULT])
 else
     $(call show_config_variable,VENDOR,[USER])
@@ -593,7 +593,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef MCU
         MCU := $(call PARSE_BOARD,$(BOARD_TAG),build.mcu)
         ifndef MCU
-                    # might be a submenu
+		    # might be a submenu
             MCU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.mcu)
         endif
     endif
@@ -601,7 +601,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef F_CPU
         F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),build.f_cpu)
         ifndef F_CPU
-                    # might be a submenu
+		    # might be a submenu
             F_CPU := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).build.f_cpu)
         endif
     endif
@@ -621,7 +621,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef AVRDUDE_ARD_PROGRAMMER
         AVRDUDE_ARD_PROGRAMMER := $(call PARSE_BOARD,$(BOARD_TAG),upload.protocol)
         ifndef AVRDUDE_ARD_PROGRAMMER
-                    # might be a submenu
+		    # might be a submenu
             AVRDUDE_ARD_PROGRAMMER := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.protocol)
         endif
     endif
@@ -629,7 +629,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef AVRDUDE_ARD_BAUDRATE
         AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),upload.speed)
         ifndef AVRDUDE_ARD_BAUDRATE
-                    # might be a submenu
+		    # might be a submenu
             AVRDUDE_ARD_BAUDRATE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.speed)
         endif
     endif
@@ -642,7 +642,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef ISP_HIGH_FUSE
         ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.high_fuses)
         ifndef ISP_HIGH_FUSE
-                    # might be a submenu
+		    # might be a submenu
             ISP_HIGH_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.high_fuses)
         endif
     endif
@@ -650,7 +650,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef ISP_LOW_FUSE
         ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.low_fuses)
         ifndef ISP_LOW_FUSE
-                    # might be a submenu
+		    # might be a submenu
             ISP_LOW_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.low_fuses)
         endif
     endif
@@ -658,7 +658,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef ISP_EXT_FUSE
         ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.extended_fuses)
         ifndef ISP_EXT_FUSE
-                    # might be a submenu
+		    # might be a submenu
             ISP_EXT_FUSE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.extended_fuses)
         endif
     endif
@@ -670,7 +670,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef BOOTLOADER_FILE
         BOOTLOADER_FILE := $(call PARSE_BOARD,$(BOARD_TAG),bootloader.file)
         ifndef BOOTLOADER_FILE
-                    # might be a submenu
+		    # might be a submenu
             BOOTLOADER_FILE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).bootloader.file)
         endif
     endif
@@ -682,7 +682,7 @@ ifeq ($(strip $(NO_CORE)),)
     ifndef HEX_MAXIMUM_SIZE
         HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),upload.maximum_size)
         ifndef HEX_MAXIMUM_SIZE
-                    # might be a submenu
+		    # might be a submenu
             HEX_MAXIMUM_SIZE := $(call PARSE_BOARD,$(BOARD_TAG),menu.cpu.$(BOARD_SUB).upload.maximum_size)
         endif
     endif
@@ -720,12 +720,12 @@ endif
 # Reset
 
 ifndef RESET_CMD
-        ARD_RESET_ARDUINO := $(shell which ard-reset-arduino 2> /dev/null)
-        ifndef ARD_RESET_ARDUINO
-                # same level as *.mk in bin directory when checked out from git
-                # or in $PATH when packaged
-                ARD_RESET_ARDUINO = $(ARDMK_DIR)/bin/ard-reset-arduino
-        endif
+	ARD_RESET_ARDUINO := $(shell which ard-reset-arduino 2> /dev/null)
+	ifndef ARD_RESET_ARDUINO
+		# same level as *.mk in bin directory when checked out from git
+		# or in $PATH when packaged
+		ARD_RESET_ARDUINO = $(ARDMK_DIR)/bin/ard-reset-arduino
+	endif
     ifneq ($(CATERINA),)
         ifneq (,$(findstring CYGWIN,$(shell uname -s)))
             RESET_CMD = $(ARD_RESET_ARDUINO) --caterina $(ARD_RESET_OPTS) $(DEVICE_PATH)
@@ -755,14 +755,14 @@ LOCAL_CPP_SRCS  ?= $(wildcard *.cpp)
 LOCAL_CC_SRCS   ?= $(wildcard *.cc)
 LOCAL_PDE_SRCS  ?= $(wildcard *.pde)
 #LOCAL_INO_SRCS  ?= $(wildcard *.ino)
-LOCAL_INO_SRCS  = master.ino
+LOCAL_INO_SRCS	= master.ino
 LOCAL_AS_SRCS   ?= $(wildcard *.S)
 LOCAL_SRCS      = $(LOCAL_C_SRCS)   $(LOCAL_CPP_SRCS) \
-                $(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
-                $(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
+		$(LOCAL_CC_SRCS)   $(LOCAL_PDE_SRCS) \
+		$(LOCAL_INO_SRCS) $(LOCAL_AS_SRCS)
 LOCAL_OBJ_FILES = $(LOCAL_C_SRCS:.c=.o)   $(LOCAL_CPP_SRCS:.cpp=.o) \
-                $(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
-                $(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
+		$(LOCAL_CC_SRCS:.cc=.o)   $(LOCAL_PDE_SRCS:.pde=.o) \
+		$(LOCAL_INO_SRCS:.ino=.o) $(LOCAL_AS_SRCS:.S=.o)
 LOCAL_OBJS      = $(patsubst %,$(OBJDIR)/%,$(LOCAL_OBJ_FILES))
 
 ifeq ($(words $(LOCAL_SRCS)), 0)
@@ -1057,7 +1057,7 @@ else
     # If no port is specified, try to guess it from wildcards.
     # Will only work if the Arduino is the only/first device matched.
     DEVICE_PATH = $(firstword $(wildcard \
-                        /dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem*))
+			/dev/ttyACM? /dev/ttyUSB? /dev/tty.usbserial* /dev/tty.usbmodem*))
     $(call show_config_variable,DEVICE_PATH,[AUTODETECTED])
 endif
 
@@ -1140,40 +1140,40 @@ $(call show_separator)
 
 # library sources
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.c
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.cpp
-        @$(MKDIR) $(dir $@)
-        $(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/libs/%.o: $(ARDUINO_LIB_PATH)/%.S
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.c
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.cpp
-        @$(MKDIR) $(dir $@)
-        $(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/platformlibs/%.o: $(ARDUINO_PLATFORM_LIB_PATH)/%.S
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.cpp
-        @$(MKDIR) $(dir $@)
-        $(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.c
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/userlibs/%.o: $(USER_LIB_PATH)/%.S
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 ifdef COMMON_DEPS
     COMMON_DEPS := $(COMMON_DEPS) $(MAKEFILE_LIST)
@@ -1183,86 +1183,86 @@ endif
 
 # normal local sources
 $(OBJDIR)/%.o: %.c $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.cc $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.cpp $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.S $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 $(OBJDIR)/%.o: %.s $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 # the pde -> o file
 $(OBJDIR)/%.o: %.pde $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # the ino -> o file
 $(OBJDIR)/%.o: %.ino $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # generated assembly
 $(OBJDIR)/%.s: %.pde $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/%.s: %.ino $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/%.s: %.cpp $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -x c++ -include $(ARDUINO_HEADER) -MMD -S -fverbose-asm $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 # core files
 $(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.c $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.cpp $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CXX) -MMD -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 $(OBJDIR)/core/%.o: $(ARDUINO_CORE_PATH)/%.S $(COMMON_DEPS) | $(OBJDIR)
-        @$(MKDIR) $(dir $@)
-        $(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	@$(MKDIR) $(dir $@)
+	$(CC) -MMD -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
 
 # various object conversions
 $(OBJDIR)/%.hex: $(OBJDIR)/%.elf $(COMMON_DEPS)
-        @$(MKDIR) $(dir $@)
-        $(OBJCOPY) -O ihex -R .eeprom $< $@
-        @$(ECHO) '\n'
-        $(call avr_size,$<,$@)
+	@$(MKDIR) $(dir $@)
+	$(OBJCOPY) -O ihex -R .eeprom $< $@
+	@$(ECHO) '\n'
+	$(call avr_size,$<,$@)
 ifneq ($(strip $(HEX_MAXIMUM_SIZE)),)
-        @if [ `$(SIZE) $@ | awk 'FNR == 2 {print $$2}'` -le $(HEX_MAXIMUM_SIZE) ]; then touch $@.sizeok; fi
+	@if [ `$(SIZE) $@ | awk 'FNR == 2 {print $$2}'` -le $(HEX_MAXIMUM_SIZE) ]; then touch $@.sizeok; fi
 else
-        @$(ECHO) "Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory"
-        @touch $@.sizeok
+	@$(ECHO) "Maximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $@ is less than $(BOARD_TAG)\'s flash memory"
+	@touch $@.sizeok
 endif
 
 $(OBJDIR)/%.eep: $(OBJDIR)/%.elf $(COMMON_DEPS)
-        @$(MKDIR) $(dir $@)
-        -$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom='alloc,load' \
-                --change-section-lma .eeprom=0 -O ihex $< $@
+	@$(MKDIR) $(dir $@)
+	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom='alloc,load' \
+		--change-section-lma .eeprom=0 -O ihex $< $@
 
 $(OBJDIR)/%.lss: $(OBJDIR)/%.elf $(COMMON_DEPS)
-        @$(MKDIR) $(dir $@)
-        $(OBJDUMP) -h --source --demangle --wide $< > $@
+	@$(MKDIR) $(dir $@)
+	$(OBJDUMP) -h --source --demangle --wide $< > $@
 
 $(OBJDIR)/%.sym: $(OBJDIR)/%.elf $(COMMON_DEPS)
-        @$(MKDIR) $(dir $@)
-        $(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
+	@$(MKDIR) $(dir $@)
+	$(NM) --size-sort --demangle --reverse-sort --line-numbers $< > $@
 
 ########################################################################
 # Avrdude
@@ -1357,7 +1357,7 @@ ifndef $(ISP_PORT)
         AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
     endif
 else
-        AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
+	AVRDUDE_ISP_OPTS += -P $(call get_isp_port)
 endif
 
 ifndef ISP_EEPROM
@@ -1375,7 +1375,7 @@ endif
 ########################################################################
 # Explicit targets start here
 
-all:            $(TARGET_EEP) $(TARGET_HEX)
+all: 		$(TARGET_EEP) $(TARGET_HEX)
 
 # Rule to create $(OBJDIR) automatically. All rules with recipes that
 # create a file within it, but do not already depend on a file within it
@@ -1384,129 +1384,129 @@ all:            $(TARGET_EEP) $(TARGET_HEX)
 # list) to prevent remaking the target when any file in the directory
 # changes.
 $(OBJDIR): pre-build
-                $(MKDIR) $(OBJDIR)
+		$(MKDIR) $(OBJDIR)
 
 pre-build:
-                $(call runscript_if_exists,$(PRE_BUILD_HOOK))
+		$(call runscript_if_exists,$(PRE_BUILD_HOOK))
 
-$(TARGET_ELF):  $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
-                $(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm
+$(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
+		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) -lc -lm
 
-$(CORE_LIB):    $(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
-                $(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
+$(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
+		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
 
 error_on_caterina:
-                $(ERROR_ON_CATERINA)
+		$(ERROR_ON_CATERINA)
 
 
 # Use submake so we can guarantee the reset happens
 # before the upload, even with make -j
-upload:         $(TARGET_HEX) verify_size
-                $(MAKE) reset
-                $(MAKE) do_upload
+upload:		$(TARGET_HEX) verify_size
+		$(MAKE) reset
+		$(MAKE) do_upload
 
-raw_upload:     $(TARGET_HEX) verify_size
-                $(MAKE) error_on_caterina
-                $(MAKE) do_upload
+raw_upload:	$(TARGET_HEX) verify_size
+		$(MAKE) error_on_caterina
+		$(MAKE) do_upload
 
 do_upload:
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
-                        $(AVRDUDE_UPLOAD_HEX)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+			$(AVRDUDE_UPLOAD_HEX)
 
-do_eeprom:      $(TARGET_EEP) $(TARGET_HEX)
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
-                        $(AVRDUDE_UPLOAD_EEP)
+do_eeprom:	$(TARGET_EEP) $(TARGET_HEX)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ARD_OPTS) \
+			$(AVRDUDE_UPLOAD_EEP)
 
-eeprom:         $(TARGET_HEX) verify_size
-                $(MAKE) reset
-                $(MAKE) do_eeprom
+eeprom:		$(TARGET_HEX) verify_size
+		$(MAKE) reset
+		$(MAKE) do_eeprom
 
-raw_eeprom:     $(TARGET_HEX) verify_size
-                $(MAKE) error_on_caterina
-                $(MAKE) do_eeprom
+raw_eeprom:	$(TARGET_HEX) verify_size
+		$(MAKE) error_on_caterina
+		$(MAKE) do_eeprom
 
 reset:
-                $(call arduino_output,Resetting Arduino...)
-                $(RESET_CMD)
+		$(call arduino_output,Resetting Arduino...)
+		$(RESET_CMD)
 
 # stty on MacOS likes -F, but on Debian it likes -f redirecting
 # stdin/out appears to work but generates a spurious error on MacOS at
 # least. Perhaps it would be better to just do it in perl ?
 reset_stty:
-                for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
-                  do $$STTYF /dev/tty >/dev/null 2>&1 && break ; \
-                done ; \
-                $$STTYF $(call get_monitor_port)  hupcl ; \
-                (sleep 0.1 2>/dev/null || sleep 1) ; \
-                $$STTYF $(call get_monitor_port) -hupcl
+		for STTYF in 'stty -F' 'stty --file' 'stty -f' 'stty <' ; \
+		  do $$STTYF /dev/tty >/dev/null 2>&1 && break ; \
+		done ; \
+		$$STTYF $(call get_monitor_port)  hupcl ; \
+		(sleep 0.1 2>/dev/null || sleep 1) ; \
+		$$STTYF $(call get_monitor_port) -hupcl
 
-ispload:        $(TARGET_EEP) $(TARGET_HEX) verify_size
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
-                        $(AVRDUDE_ISPLOAD_OPTS)
+ispload:	$(TARGET_EEP) $(TARGET_HEX) verify_size
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) \
+			$(AVRDUDE_ISPLOAD_OPTS)
 
 burn_bootloader:
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_PRE)),)
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
 endif
 ifneq ($(strip $(AVRDUDE_ISP_BURN_BOOTLOADER)),)
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_BURN_BOOTLOADER)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_BURN_BOOTLOADER)
 endif
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
 endif
 
 set_fuses:
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_PRE)),)
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) -e $(AVRDUDE_ISP_FUSES_PRE)
 endif
 ifneq ($(strip $(AVRDUDE_ISP_FUSES_POST)),)
-                $(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
+		$(AVRDUDE) $(AVRDUDE_COM_OPTS) $(AVRDUDE_ISP_OPTS) $(AVRDUDE_ISP_FUSES_POST)
 endif
 
 clean::
-                $(REMOVE) $(OBJDIR)
+		$(REMOVE) $(OBJDIR)
 
-size:   $(TARGET_HEX)
-                $(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
+size:	$(TARGET_HEX)
+		$(call avr_size,$(TARGET_ELF),$(TARGET_HEX))
 
 show_boards:
-                @$(CAT) $(BOARDS_TXT) | grep -E '^[a-zA-Z0-9_]+.name' | sort -uf | sed 's/.name=/:/' | column -s: -t
+		@$(CAT) $(BOARDS_TXT) | grep -E '^[a-zA-Z0-9_]+.name' | sort -uf | sed 's/.name=/:/' | column -s: -t
 
 monitor:
 ifneq ($(MONITOR_CMD), 'putty')
-        $(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
+	$(MONITOR_CMD) $(call get_monitor_port) $(MONITOR_BAUDRATE)
 else
     ifneq ($(strip $(MONITOR_PARMS)),)
-                $(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
+		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE),$(MONITOR_PARMS) $(call get_monitor_port)
     else
-                $(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
+		$(MONITOR_CMD) -serial -sercfg $(MONITOR_BAUDRATE) $(call get_monitor_port)
     endif
 endif
 
 disasm: $(OBJDIR)/$(TARGET).lss
-                @$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss\n\n"
+		@$(ECHO) "The compiled ELF file has been disassembled to $(OBJDIR)/$(TARGET).lss\n\n"
 
 symbol_sizes: $(OBJDIR)/$(TARGET).sym
-                @$(ECHO) "A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym\n\n"
+		@$(ECHO) "A symbol listing sorted by their size have been dumped to $(OBJDIR)/$(TARGET).sym\n\n"
 
 verify_size:
 ifeq ($(strip $(HEX_MAXIMUM_SIZE)),)
-        @$(ECHO) "\nMaximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $(TARGET_HEX) is less than $(BOARD_TAG)\'s flash memory\n\n"
+	@$(ECHO) "\nMaximum flash memory of $(BOARD_TAG) is not specified. Make sure the size of $(TARGET_HEX) is less than $(BOARD_TAG)\'s flash memory\n\n"
 endif
-        @if [ ! -f $(TARGET_HEX).sizeok ]; then echo >&2 "\nThe size of the compiled binary file is greater than the $(BOARD_TAG)'s flash memory. \
+	@if [ ! -f $(TARGET_HEX).sizeok ]; then echo >&2 "\nThe size of the compiled binary file is greater than the $(BOARD_TAG)'s flash memory. \
 See http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it."; false; fi
 
 generate_assembly: $(OBJDIR)/$(TARGET).s
-                @$(ECHO) "Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s\n\n"
+		@$(ECHO) "Compiler-generated assembly for the main input source has been dumped to $(OBJDIR)/$(TARGET).s\n\n"
 
 generated_assembly: generate_assembly
-                @$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
+		@$(ECHO) "\"generated_assembly\" target is deprecated. Use \"generate_assembly\" target instead\n\n"
 
 help_vars:
-                @$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
+		@$(CAT) $(ARDMK_DIR)/arduino-mk-vars.md
 
 help:
-                @$(ECHO) "\nAvailable targets:\n\
+		@$(ECHO) "\nAvailable targets:\n\
   make                   - compile the code\n\
   make upload            - upload\n\
   make ispload           - upload using an ISP\n\
@@ -1535,7 +1535,7 @@ help:
   make help_vars         - print all variables that can be overridden\n\
   make help              - show this help\n\
 "
-        @$(ECHO) "Please refer to $(ARDMK_DIR)/Arduino.mk for more details.\n"
+	@$(ECHO) "Please refer to $(ARDMK_DIR)/Arduino.mk for more details.\n"
 
 .PHONY: all upload raw_upload raw_eeprom error_on_caterina reset reset_stty ispload \
         clean depends size show_boards monitor disasm symbol_sizes generated_assembly \
