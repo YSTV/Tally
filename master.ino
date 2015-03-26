@@ -24,6 +24,13 @@ ATEMbase AtemSwitcher;
 XBee xbee = XBee();
 Rx16Response rx16 = Rx16Response();
 
+void sendFile(char* file, EthernetClient client);
+void updateTally(int addr, int state);
+void setValue(String var, String val);
+void webServer();
+void updateXBEE();
+void reset();
+
 void setup() {
 	Serial.begin(9600);
 	Serial3.begin(9600);
