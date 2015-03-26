@@ -1,5 +1,5 @@
 # Tally
-Uses xbee to wirelessly control up to 64 tally "blocks"
+Uses xbee to wirelessly communicate with embeded devices such as tally and control boards.
 
 Chip support:
 * ~~ATMega168~~
