@@ -10,6 +10,7 @@
 
 int dio[] = {A0, A1, A2, A3, 7, A5, A4, 6};
 int tState[8];
+int prevState[8];
 int mapping[64];
 int state = 0;
 
@@ -19,7 +20,9 @@ bool qReset = false;
 byte mac[] = { 0xDE, 0x59, 0x53, 0x54, 0x56, 0x00 };
 EthernetServer server(80);  // create a server at port 80
 ATEMbase AtemSwitcher;
+
 XBee xbee = XBee();
+Rx16Response rx16 = Rx16Response();
 
 void setup() {
 	Serial.begin(9600);
@@ -85,17 +88,47 @@ bool getProgramTally(int source) {
 	return (AtemSwitcher.getTallyByIndexTallyFlags(source - 1) & 1) > 0 ? true : false;
 }
 
+bool getPreviewTally(int source) {
+	return (AtemSwitcher.getTallyByIndexTallyFlags(source - 1) & 2) > 0 ? true : false;
+}
+
 void updateXBEE() {
 	int addr = (state % 64);
 	state++;
-	int mapp = mapping[addr];
+/*	int mapp = mapping[addr];
 	if (mapp > 0) {
 		updateTally(addr, getProgramTally(mapp));
+	}*/
+
+	xbee.readPacket();
+	if (xbee.getResponse().isAvailable()) {
+		if (xbee.getResponse().getApiId() == RX_16_RESPONSE) {
+			xbee.getResponse().getRx16Response(rx16);
+
+			int pktId = rx16.getData(0);
+			if (pktId == 1) { // Take
+				AtemSwitcher.doCut();
+			} else if (pktId == 2) { // Change preview
+				AtemSwitcher.changePreviewInput(rx16.getData(1) + 1);
+			}
+		}
 	}
 
 	for (int i = 0; i < 8; i++) {
+		if (getPreviewTally(i + 1) != prevState[i]) {
+			prevState[i] = getPreviewTally(i + 1);
+
+			uint8_t payload[] = { 2, i, prevState[i] };
+			Tx16Request tx = Tx16Request(0xFFFF, payload, sizeof(payload));
+			xbee.send(tx);
+		}
 		if (getProgramTally(i + 1) != tState[i]) {
 			tState[i] = getProgramTally(i + 1);
+
+			uint8_t payload[] = { 3, i, tState[i] };
+			Tx16Request tx = Tx16Request(0xFFFF, payload, sizeof(payload));
+			xbee.send(tx);
+
 			for (int j = 0; j < 64; j++) {
 				if (mapping[j] == i + 1) {
 					updateTally(j, tState[i]);

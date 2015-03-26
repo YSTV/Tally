@@ -509,7 +509,65 @@ void ATEMbase::_finishCommandPacket()	{
 	}
 }
 
+/**
+	 * Set Program Input; Video Source
+	 * mE 	0: ME1, 1: ME2
+	 * videoSource 	(See video source list)
+	 */
+	void ATEMbase::setProgramInputVideoSource(uint8_t mE, uint16_t videoSource) {
+	
+  		_prepareCommandPacket(PSTR("CPgI"),4,(_packetBuffer[12+_cBBO+4+4+0]==mE));
 
+		_packetBuffer[12+_cBBO+4+4+0] = mE;
+		
+		_packetBuffer[12+_cBBO+4+4+2] = highByte(videoSource);
+		_packetBuffer[12+_cBBO+4+4+3] = lowByte(videoSource);
+		
+   		_finishCommandPacket();
+
+	}
+	
+	/**
+	 * Set Preview Input; Video Source
+	 * mE 	0: ME1, 1: ME2
+	 * videoSource 	(See video source list)
+	 */
+	void ATEMbase::setPreviewInputVideoSource(uint8_t mE, uint16_t videoSource) {
+	
+  		_prepareCommandPacket(PSTR("CPvI"),4,(_packetBuffer[12+_cBBO+4+4+0]==mE));
+
+		_packetBuffer[12+_cBBO+4+4+0] = mE;
+		
+		_packetBuffer[12+_cBBO+4+4+2] = highByte(videoSource);
+		_packetBuffer[12+_cBBO+4+4+3] = lowByte(videoSource);
+		
+   		_finishCommandPacket();
+
+	}
+	
+	/**
+	 * Set Cut; M/E
+	 * mE 	0: ME1, 1: ME2
+	 */
+	void ATEMbase::performCutME(uint8_t mE) {
+	
+  		_prepareCommandPacket(PSTR("DCut"),4);
+
+		_packetBuffer[12+_cBBO+4+4+0] = mE;
+		
+   		_finishCommandPacket();
+
+	}
+
+void ATEMbase::changeProgramInput(uint16_t inputNumber)  {
+	setProgramInputVideoSource(0, inputNumber);
+}
+void ATEMbase::changePreviewInput(uint16_t inputNumber)  {
+	setPreviewInputVideoSource(0, inputNumber);
+}
+void ATEMbase::doCut()	{
+	performCutME(0);
+}
 
 /**************
  *

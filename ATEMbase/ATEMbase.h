@@ -87,6 +87,14 @@ class ATEMbase
     void connect(const boolean useFixedPortNumber);
     void runLoop();
 	void runLoop(uint16_t delayTime);
+	
+	void changeProgramInput(uint16_t inputNumber);
+	void changePreviewInput(uint16_t inputNumber);
+	void doCut();
+	
+	void setProgramInputVideoSource(uint8_t mE, uint16_t videoSource);
+	void setPreviewInputVideoSource(uint8_t mE, uint16_t videoSource);
+	void performCutME(uint8_t mE);
 		
 	uint16_t getATEM_lastRemotePacketId();
 	uint16_t getSessionID();
