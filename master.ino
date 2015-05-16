@@ -82,6 +82,19 @@ void setup() {
 		Serial.println("E3");
 		return;
 	}
+
+	uint8_t val[] = { digitalLow };
+	XBeeAddress64 remoteAddress = XBeeAddress64(0x0, 0xFFFF);
+	for (int i = 0; i < 8; i++) {
+		uint8_t cmd[] = {'D', 48 + i};
+		RemoteAtCommandRequest remoteAtRequest = RemoteAtCommandRequest(remoteAddress, cmd, val, sizeof(val));
+
+		xbee.send(remoteAtRequest);
+	}
+
+	uint8_t cmd[] = {'W', 'R'};
+	RemoteAtCommandRequest remoteAtRequest = RemoteAtCommandRequest(remoteAddress, cmd);
+	xbee.send(remoteAtRequest);
 }
 
 void loop() {
@@ -103,7 +116,16 @@ bool getPreviewTally(int source) {
 }
 
 void updateXBEE() {
-	state++;
+	if (state++ > 4096) {
+		Serial.println("Push update");
+		state = 0;
+		for (int j = 0; j < 64; j++) {
+			int mapp = mapping[j];
+			if (mapp > 0) {
+				updateTally(j, getProgramTally(mapp));
+			}
+		}
+	}
 /*	int addr = (state % 64);
 	int mapp = mapping[addr];
 	if (mapp > 0) {
@@ -150,15 +172,15 @@ void updateXBEE() {
 
 void updateTally(int addr, int state) {
 	XBeeAddress64 remoteAddress = XBeeAddress64(0x0, (addr + 1));
-	uint8_t cmd[] = {'D', '5'};
-	uint8_t val[] = { state ? digitalHigh : digitalLow };
-	RemoteAtCommandRequest remoteAtRequest = RemoteAtCommandRequest(remoteAddress, cmd, val, sizeof(val));  
+	uint8_t cmd[] = {'D', '7'};
+	uint8_t val[] = { state ? digitalLow : digitalHigh };
+	RemoteAtCommandRequest remoteAtRequest = RemoteAtCommandRequest(remoteAddress, cmd, val, sizeof(val));
 
 	xbee.send(remoteAtRequest);
 }
 
 void reset() {
-	asm volatile ("  jmp 0"); 
+	asm volatile ("  jmp 0");
 }
 
 void setValues(String post) {
@@ -236,6 +258,8 @@ void doTemplate(char line[], EthernetClient client) {
 			result = getProgramTally(args.toInt()) ? "ON" : "OFF";
 		} else if (temp == "name") {
 			result = AtemSwitcher.getInputShortName(args.toInt());
+		} else if (temp == "lname") {
+			result = AtemSwitcher.getInputLongName(args.toInt());
 		} else if (temp == "map") {
 			result = String(mapping[args.toInt()]);
 		} else if (temp == "ip") {
@@ -385,3 +409,4 @@ void webServer() {
 		client.stop(); // close the connection
 	}
 }
+

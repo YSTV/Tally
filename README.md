@@ -6,3 +6,8 @@ Master Chip support:
 * ~~ATMega328~~
 * ATmega1280
 * ATmega2560
+
+Commands to program xbee devices:
+ATID5456
+ATMYx
+ATAP1
